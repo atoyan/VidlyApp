@@ -1,7 +1,9 @@
 ﻿
+using System;
 using System.Collections.Generic;
 
 using System.Web.Mvc;
+using VidlyApp.DbContext;
 using VidlyApp.Models;
 using VidlyApp.ViewModels;
 
@@ -17,8 +19,8 @@ namespace VidlyApp.Controllers
 
             var customers = new List<Customer>
             {
-                new Customer {name = "Andranik Atoyan", id=1},
-                new Customer {name = "Agnija Bako", id=2}
+                new Customer {Name = "Andranik Atoyan", Id=1},
+                new Customer {Name = "Agnija Bako", Id=2}
 
             };
 
@@ -33,14 +35,33 @@ namespace VidlyApp.Controllers
         [Route("Customers/Details/{id}")]
         public ActionResult Details(int id)
         {
+           
             int constructorId = id;
             var customers = new List<Customer>
             {
-                new Customer {name = "Andranik Atoyan", id=1},
-                new Customer {name = "Agnija Bako", id=2}
+                new Customer {Name = "Andranik Atoyan", Id=1},
+                new Customer {Name = "Agnija Bako", Id=2}
 
             };
-            var specificCustomer = customers.Find(x => x.id==constructorId);
+             var dbCustomerSave = new MyDbContext();
+            
+             foreach (var customer in customers)
+             {
+                 try
+                 {
+                     dbCustomerSave.Customers.Add(customer);
+                     dbCustomerSave.SaveChanges();
+                }
+                 catch (Exception E)
+                 {
+                   
+                     
+                 }
+                
+            }
+
+             
+            var specificCustomer = customers.Find(x => x.Id==constructorId);
             var viewModel = new RandomMovieViewModel()
             {
                 Customer = specificCustomer
