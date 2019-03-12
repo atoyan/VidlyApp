@@ -1,0 +1,23 @@
+﻿@using VidlyApp.Models
+@model VidlyApp.ViewModels.RandomMovieViewModel
+@{
+    ViewBag.Title = "Customers";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@if (@Model.Customers.Count > 0)
+{
+    foreach(var customer in @Model.Customers) { 
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-6">
+                    <span><a href="Customers/Details/@customer.id"> @customer.name </a></span>
+                </div>
+            </div>
+        </div>
+    }
+}
+else{ 
+    <div> No customers</div>
+}
+
