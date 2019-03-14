@@ -1,7 +1,8 @@
 ﻿
 using System;
 using System.Collections.Generic;
-
+using System.Data.Entity;
+using System.Linq;
 using System.Web.Mvc;
 using VidlyApp.DbContext;
 using VidlyApp.Models;
@@ -11,22 +12,43 @@ namespace VidlyApp.Controllers
 {
     public class CustomersController : Controller
     {
+        private MyDbContext _context;
+
+        public CustomersController()
+        {
+            _context = new MyDbContext();
+
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            _context.Dispose();
+        }
 
         // GET: Customers
         [Route("Customers")]
         public ActionResult Index()
         {
-
-            var customers = new List<Customer>
+            List< Customer>  customersList= new List<Customer>();
+            customersList.Add(new Customer()
             {
-                new Customer {Name = "Andranik Atoyan", Id=1},
-                new Customer {Name = "Agnija Bako", Id=2}
+                Id=_context.Customers.Find(1).Id,
+                Name = _context.Customers.Find(1).Name
 
-            };
+            });
+            customersList.Add(new Customer()
+            {
+                Id = _context.Customers.Find(2).Id,
+                Name = _context.Customers.Find(2).Name
+
+            });
+
+
 
             var viewModel = new RandomMovieViewModel()
             {
-                Customers = customers
+            Customers = customersList
+                
             };
 
             return View(viewModel);
@@ -37,31 +59,11 @@ namespace VidlyApp.Controllers
         {
            
             int constructorId = id;
-            var customers = new List<Customer>
-            {
-                new Customer {Name = "Andranik Atoyan", Id=1},
-                new Customer {Name = "Agnija Bako", Id=2}
-
-            };
-             var dbCustomerSave = new MyDbContext();
+           
             
-             foreach (var customer in customers)
-             {
-                 try
-                 {
-                     dbCustomerSave.Customers.Add(customer);
-                     dbCustomerSave.SaveChanges();
-                }
-                 catch (Exception E)
-                 {
-                   
-                     
-                 }
-                
-            }
 
              
-            var specificCustomer = customers.Find(x => x.Id==constructorId);
+            var specificCustomer = _context.Customers.Find(constructorId);
             var viewModel = new RandomMovieViewModel()
             {
                 Customer = specificCustomer
